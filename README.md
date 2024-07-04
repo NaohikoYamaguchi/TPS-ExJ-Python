@@ -50,5 +50,5 @@ You can read document made by RDoc in doc/index.html.
 explainメソッドは、与えられたコードネーム列から、隣り合うコード同士の和音間距離を
 算出し、最も妥当性のある和音解釈を計算して返します。
 
-Sphinxを用いて生成したドキュメントがdocディレクトリ内のindex.htmから閲覧できます。
+Sphinxを用いて生成したドキュメントがhtmlディレクトリ内のindex.htmから閲覧できます。
 各クラスのメソッドやプロパティについてはそちらをご参照ください。
