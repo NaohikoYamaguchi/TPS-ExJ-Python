@@ -1,0 +1,7 @@
+Basicspace module
+=================
+
+.. automodule:: Basicspace
+   :members:
+   :undoc-members:
+   :show-inheritance:

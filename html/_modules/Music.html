@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Music &mdash; sourcecodev2  ドキュメント</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=c033477b"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sourcecodev2
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Basicspace.html">Basicspace module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Basicspace_calculator.html">Basicspace_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Chord.html">Chord module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Chord_calculator.html">Chord_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Delta_chord_calculator.html">Delta_chord_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Modint.html">Modint module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Music.html">Music module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Pitchclass.html">Pitchclass module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Region_calculator.html">Region_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../graphtest.html">graphtest module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sourcecodev2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">モジュールコード</a></li>
+      <li class="breadcrumb-item active">Music</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Music のソースコード</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Music.py</span>
+
+<span class="sd">	音楽（和音列）からラティス状の遷移グラフを作成し、和音間距離が最短の解釈を探索する</span>
+<span class="sd">	</span>
+<span class="sd">	* Author: Naohiko Yamaguchi</span>
+<span class="sd">	* Copyright (c) 2024 Naohiko Yamaguchi,IPUT in Tokyo, Japan.</span>
+<span class="sd">	* License: New BSD License</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 事前に必要な外部モジュールをインポートする</span>
+<span class="kn">from</span> <span class="nn">Chord</span> <span class="kn">import</span> <span class="n">Chord</span>
+<span class="kn">from</span> <span class="nn">Delta_chord_calculator</span> <span class="kn">import</span> <span class="n">Delta_Chord_calculator</span>
+
+<div class="viewcode-block" id="Node">
+<a class="viewcode-back" href="../Music.html#Music.Node">[ドキュメント]</a>
+<span class="k">class</span> <span class="nc">Node</span><span class="p">:</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Nodeクラス</span>
+
+<span class="sd">	グラフを構成するノードを表現するクラス</span>
+<span class="sd">	Note:</span>
+<span class="sd">	本クラスは書籍「Java データ構造とアルゴリズム基礎講座」所収のコードをRubyに移植したものである．</span>
+<span class="sd">	</span>
+<span class="sd">	Args:</span>
+<span class="sd">		name (Str): ノード名</span>
+<span class="sd">		h (Int): ヒューリスティック値</span>
+<span class="sd">		</span>
+<span class="sd">	Attributes:</span>
+<span class="sd">		name (Str): ノード名</span>
+<span class="sd">		children (List): 子ノードを格納したリスト</span>
+<span class="sd">		chord_cal (List): 子コードとの距離を格納したリスト</span>
+<span class="sd">		pointer (Node): 親ノードへのポインタ（参照）</span>
+<span class="sd">		g (Int): コスト</span>
+<span class="sd">		h (Int): ヒューリスティック値</span>
+<span class="sd">		f (Int): 評価値（初期値0）</span>
+<span class="sd">		hasG (Bool): コスト設定済みフラグ（初期値False）</span>
+<span class="sd">		hasF (Bool): 評価値設定済みフラグ（初期値False）</span>
+<span class="sd">	</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="c1"># コンストラクタ</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>			<span class="c1">#ノード名（引数で指定）</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>			<span class="c1">#子ノード</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">children_costs</span> <span class="o">=</span> <span class="p">{}</span>	<span class="c1">#子ノードのコスト</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pointer</span> <span class="o">=</span> <span class="kc">None</span>			<span class="c1">#親へのポインタ</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="mi">0</span>					<span class="c1">#コスト</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">h</span>					<span class="c1">#ヒューリスティック値（引数で指定）</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="mi">0</span>					<span class="c1">#評価値</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">has_g</span> <span class="o">=</span> <span class="kc">False</span>			<span class="c1">#コスト設定済みフラグ</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">has_f</span> <span class="o">=</span> <span class="kc">False</span>			<span class="c1">#評価値設定済みフラグ</span>
+
+<div class="viewcode-block" id="Node.get_name">
+<a class="viewcode-back" href="../Music.html#Music.Node.get_name">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;ノード名のゲッタ（アクセサ）</span>
+
+<span class="sd">			ノード名を返す</span>
+
+<span class="sd">			Returns:</span>
+<span class="sd">				name (Str): ノード名</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+
+	
+<div class="viewcode-block" id="Node.set_pointer">
+<a class="viewcode-back" href="../Music.html#Music.Node.set_pointer">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">set_pointer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;pointerのセッタ（アクセサ）</span>
+
+<span class="sd">			pointerに親ノードへの参照を格納する</span>
+<span class="sd">			</span>
+<span class="sd">			Args:</span>
+<span class="sd">				node (Node): 親ノード</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pointer</span> <span class="o">=</span> <span class="n">node</span></div>
+
+		
+<div class="viewcode-block" id="Node.get_pointer">
+<a class="viewcode-back" href="../Music.html#Music.Node.get_pointer">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">get_pointer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;pointerのゲッタ（アクセサ）</span>
+
+<span class="sd">			pointer(親ノード）を返す</span>
+
+<span class="sd">			Returns:</span>
+<span class="sd">				node (Node): 親ノード</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointer</span></div>
+
+		
+<div class="viewcode-block" id="Node.set_g">
+<a class="viewcode-back" href="../Music.html#Music.Node.set_g">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">set_g</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;g(コスト)のセッタ（アクセサ）</span>
+
+<span class="sd">			gにコストを格納した後、コスト格納済みフラグを立てる</span>
+<span class="sd">			</span>
+<span class="sd">			Args:</span>
+<span class="sd">				g (Int): コスト</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">has_g</span> <span class="o">=</span> <span class="kc">True</span>	<span class="c1">#コスト設定済みフラグを立てる</span></div>
+
+
+<div class="viewcode-block" id="Node.get_g">
+<a class="viewcode-back" href="../Music.html#Music.Node.get_g">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">get_g</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;g(コスト)のゲッタ（アクセサ）</span>
+
+<span class="sd">			g(コスト)を返す</span>
+
+<span class="sd">			Returns:</span>
+<span class="sd">				g (Int): コスト</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span></div>
+
+
+<div class="viewcode-block" id="Node.set_h">
+<a class="viewcode-back" href="../Music.html#Music.Node.set_h">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">set_h</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;h(ヒューリスティック値)のセッタ（アクセサ）</span>
+
+<span class="sd">			hにヒューリスティック値を格納する</span>
+<span class="sd">			</span>
+<span class="sd">			Args:</span>
+<span class="sd">				h (Int): ヒューリスティック値</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">h</span></div>
+
+
+<div class="viewcode-block" id="Node.get_h">
+<a class="viewcode-back" href="../Music.html#Music.Node.get_h">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">get_h</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;h(ヒューリスティック値)のゲッタ（アクセサ）</span>
+
+<span class="sd">			h(ヒューリスティック値)を返す</span>
+
+<span class="sd">			Returns:</span>
+<span class="sd">				h (Int): ヒューリスティック値</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span></div>
+
+
+<div class="viewcode-block" id="Node.set_f">
+<a class="viewcode-back" href="../Music.html#Music.Node.set_f">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">set_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;f(評価値)のセッタ（アクセサ）</span>
+
+<span class="sd">			fに評価値を格納した後、評価値格納済みフラグを立てる</span>
+<span class="sd">			</span>
+<span class="sd">			Args:</span>
+<span class="sd">				f (Int): 評価値</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">has_f</span> <span class="o">=</span> <span class="kc">True</span>	<span class="c1">#評価値設定済みフラグを立てる</span></div>
+
+
+
+<div class="viewcode-block" id="Node.get_f">
+<a class="viewcode-back" href="../Music.html#Music.Node.get_f">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">get_f</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;f(評価値)のゲッタ（アクセサ）</span>
+
+<span class="sd">			f(評価値)を返す</span>
+
+<span class="sd">			Returns:</span>
+<span class="sd">				f (Int): 評価値</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span></div>
+
+
+<div class="viewcode-block" id="Node.add_child">
+<a class="viewcode-back" href="../Music.html#Music.Node.add_child">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">add_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="n">cost</span><span class="p">):</span>	
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;子ノードを追加する</span>
+
+<span class="sd">			ノードに子ノードを追加する</span>
+<span class="sd">			</span>
+<span class="sd">			Args:</span>
+<span class="sd">				child (Node): 子ノード</span>
+<span class="sd">				cost (Int): 子ノードへの経路コスト（ノード間距離）</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">children_costs</span><span class="p">[</span><span class="n">child</span><span class="p">]</span> <span class="o">=</span> <span class="n">cost</span></div>
+
+
+<div class="viewcode-block" id="Node.get_children">
+<a class="viewcode-back" href="../Music.html#Music.Node.get_children">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">get_children</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;children(子ノードリスト)のゲッタ（アクセサ）</span>
+
+<span class="sd">			children(子ノードリスト)を返す</span>
+
+<span class="sd">			Returns:</span>
+<span class="sd">				children (List): 子ノードリスト</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span></div>
+
+
+<div class="viewcode-block" id="Node.get_cost">
+<a class="viewcode-back" href="../Music.html#Music.Node.get_cost">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">get_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;指定した子ノードへの経路コスト（ノード間距離）を取得</span>
+
+<span class="sd">			指定した子ノードへの経路コスト（ノード間距離）を返す</span>
+<span class="sd">			</span>
+<span class="sd">			Args:</span>
+<span class="sd">				child (Node): 子ノード</span>
+
+<span class="sd">			Returns:</span>
+<span class="sd">				children_costs (List): 子ノードリスト</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children_costs</span><span class="p">[</span><span class="n">child</span><span class="p">]</span></div>
+
+
+	<span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;クラスの文字列化処理</span>
+<span class="sd">		</span>
+<span class="sd">			文字列表示する</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">(h:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="si">}</span><span class="s2">)&quot;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_g</span><span class="p">:</span>
+			<span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;(g:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="si">}</span><span class="s2">)&quot;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_f</span><span class="p">:</span>
+			<span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;(f:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="si">}</span><span class="s2">)&quot;</span>
+		<span class="k">return</span> <span class="n">result</span></div>
+
+
+
+
+<div class="viewcode-block" id="Search">
+<a class="viewcode-back" href="../Music.html#Music.Search">[ドキュメント]</a>
+<span class="k">class</span> <span class="nc">Search</span><span class="p">:</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Searchクラス</span>
+
+<span class="sd">		グラフを構成し、探索を行うクラス</span>
+<span class="sd">		Note:</span>
+<span class="sd">		本クラスは書籍「Java データ構造とアルゴリズム基礎講座」所収のコードをRubyに移植したものである．</span>
+
+<span class="sd">		Attributes:</span>
+<span class="sd">			node (List): ノード群を格納したリスト</span>
+<span class="sd">			goal (Node): グラフの終点ノードを示す参照</span>
+<span class="sd">			start (Node): グラフの始点ノードを示す参照</span>
+<span class="sd">	</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>		<span class="c1">#ノードリスト</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">goal</span> <span class="o">=</span> <span class="kc">None</span>	<span class="c1">#終点ノード</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="kc">None</span>	<span class="c1">#始点ノード</span>
+		
+
+<div class="viewcode-block" id="Search.new_node">
+<a class="viewcode-back" href="../Music.html#Music.Search.new_node">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">new_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">heuristic</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;グラフにノードを追加する</span>
+
+<span class="sd">			指定した子ノードへの経路コスト（ノード間距離）を返す</span>
+<span class="sd">			</span>
+<span class="sd">			Args:</span>
+<span class="sd">				name (Str): ノード名</span>
+<span class="sd">				heuristic (Int): ヒューリスティック値</span>
+
+<span class="sd">			Returns:</span>
+<span class="sd">				length (Int): ノード数</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">new_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">heuristic</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_node</span><span class="p">)</span>
+		<span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span></div>
+
+
+
+<div class="viewcode-block" id="Search.new_branch">
+<a class="viewcode-back" href="../Music.html#Music.Search.new_branch">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">new_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">,</span> <span class="n">child_id</span><span class="p">,</span> <span class="n">cost</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;ノード間に枝を張る</span>
+
+<span class="sd">			指定した子ノード間に経路（枝）を作成する</span>
+<span class="sd">			</span>
+<span class="sd">			Args:</span>
+<span class="sd">				parent_id (Int): 親ノードのノードID</span>
+<span class="sd">				child_id (Int): 子ノードのノードID</span>
+<span class="sd">				cost (Int): 枝のコスト（距離）</span>
+
+<span class="sd">			Returns:</span>
+<span class="sd">				length (Int): ノード数</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">parent_id</span><span class="p">]</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">child_id</span><span class="p">],</span> <span class="n">cost</span><span class="p">)</span></div>
+
+
+	<span class="c1"># 状態空間の始点ノードと終点ノードを登録</span>
+	<span class="c1"># == 引数</span>
+	<span class="c1"># [start_id] 始点ノードとするノードのID</span>
+	<span class="c1"># [end_id] 終点ノードとするノードのID</span>
+<div class="viewcode-block" id="Search.set_start_goal">
+<a class="viewcode-back" href="../Music.html#Music.Search.set_start_goal">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">set_start_goal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_id</span><span class="p">,</span> <span class="n">end_id</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;グラフの始点ノードと終点ノードを指定する</span>
+
+<span class="sd">			指定した子ノード間に経路（枝）を作成する</span>
+<span class="sd">			</span>
+<span class="sd">			Args:</span>
+<span class="sd">				start_id (Int): 始点ノードに指定するノードID</span>
+<span class="sd">				end_id (Int): 終点ノードに指定するノードID</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">start_id</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">goal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">end_id</span><span class="p">]</span></div>
+
+
+	<span class="c1">#クラスの文字列表記を定義</span>
+	<span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;クラスの文字列化処理</span>
+<span class="sd">		</span>
+<span class="sd">			文字列表示する</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">now</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">goal</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+		<span class="k">while</span> <span class="n">now</span><span class="o">.</span><span class="n">get_pointer</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">result</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; &lt;- &quot;</span> <span class="o">+</span> <span class="n">result</span>
+			<span class="n">now</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">get_pointer</span><span class="p">()</span>
+
+		<span class="k">if</span> <span class="n">now</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">:</span>
+			<span class="n">result</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> *Route search was successful.*&quot;</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;*Route search failed.&quot;</span>
+		<span class="k">return</span> <span class="n">result</span>
+	
+	
+<div class="viewcode-block" id="Search.aStar">
+<a class="viewcode-back" href="../Music.html#Music.Search.aStar">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">aStar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;A*アルゴリズムによる最短路探索</span>
+
+<span class="sd">			A*（エースター）アルゴリズムによる最短路探索を行う。</span>
+<span class="sd">			A*アルゴリズムは距離推定値（ヒューリスティック値）を使用して効率的な最短路探索を行うが、</span>
+<span class="sd">			ヒューリスティック値が指定されていない場合はダイクストラ法に一致する。</span>
+<span class="sd">			</span>
+<span class="sd">			グラフ中の各ノードに求めた最短距離を格納する。</span>
+<span class="sd">			</span>
+<span class="sd">			Returns:</span>
+<span class="sd">				success (Bool): 探索成功したか否か</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="nb">open</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="nb">open</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">set_g</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">set_f</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		
+		<span class="n">closed</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
+		
+		<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+			<span class="c1">#ステップ数の表示とカウントアップ</span>
+			<span class="c1">#print(&quot;STEP:&quot; + str(step) + &quot;\n&quot;)</span>
+			<span class="n">step</span> <span class="o">+=</span> <span class="mi">1</span>
+			
+			<span class="c1">#これからチェックするノードのリスト</span>
+			<span class="c1">#print(&quot; OPEN:&quot; + str(open) + &quot;\n&quot;)</span>
+			<span class="c1">#チェックの終わったノードのリスト</span>
+			<span class="c1">#print(&quot; closed:&quot; + str(closed) + &quot;\n&quot;</span>
+			
+			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">open</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="c1">#もう調べるべきノードが存在しない場合falseを返して終わり</span>
+				<span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+				<span class="k">break</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="c1">#調べるべきノードが存在する場合</span>
+				<span class="c1">#次に調べるノードをopenからnodeへ移す</span>
+				<span class="n">node</span> <span class="o">=</span> <span class="nb">open</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+				<span class="k">del</span> <span class="nb">open</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+				
+				<span class="k">if</span> <span class="n">node</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">goal</span><span class="p">:</span>
+					<span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
+					<span class="k">break</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="c1">#nodeがまだゴールじゃない</span>
+					<span class="c1">#nodeの子ノードを展開</span>
+					<span class="n">children</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_children</span><span class="p">()</span>
+					
+					<span class="c1">#チェックの終わったノードリストにnodeを追加</span>
+					<span class="n">closed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+					
+					<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cnode</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">children</span><span class="p">):</span>
+						<span class="c1">#子ノードのi番目をmに移す</span>
+						<span class="n">m</span> <span class="o">=</span> <span class="n">cnode</span>
+						
+						<span class="c1">#nodeまでの評価値とnode-&gt;mのコストを足したものを</span>
+						<span class="c1">#gmnとする</span>
+						
+						<span class="n">gmn</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">get_g</span><span class="p">())</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">get_cost</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+						
+						<span class="k">if</span> <span class="n">m</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">open</span> <span class="ow">and</span> <span class="n">m</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">closed</span><span class="p">:</span>
+							<span class="c1">#もしも、子ノードがopenにもclosedにも存在しないなら</span>
+							<span class="c1">#（つまり未チェックかつチェック予定にも存在しないなら）</span>
+							<span class="c1">#mのコストとしてgmnを入れる</span>
+							<span class="n">m</span><span class="o">.</span><span class="n">set_g</span><span class="p">(</span><span class="n">gmn</span><span class="p">)</span>
+						
+						<span class="k">if</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">:</span>
+							<span class="c1">#もしも、子ノードがopenに存在するならば</span>
+							<span class="k">if</span> <span class="n">gmn</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get_g</span><span class="p">()):</span>
+								<span class="c1">#今求めた評価値が、計算済みのコストより小さいなら</span>
+								<span class="c1">#評価値を更新</span>
+								<span class="n">m</span><span class="o">.</span><span class="n">set_g</span><span class="p">(</span><span class="n">gmn</span><span class="p">)</span>
+								<span class="c1">#親ノードを更新</span>
+								<span class="n">m</span><span class="o">.</span><span class="n">set_pointer</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+							
+						
+						<span class="n">fmn</span> <span class="o">=</span> <span class="n">gmn</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">get_h</span><span class="p">()</span>
+						
+						<span class="k">if</span> <span class="n">m</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">open</span> <span class="ow">and</span> <span class="n">m</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">closed</span><span class="p">:</span>
+							<span class="c1">#もしも、子ノードがopenにもclosedにも存在しないなら</span>
+							<span class="c1">#（つまり未チェックかつチェック予定にも存在しないなら）</span>
+							<span class="c1">#親ノードを更新</span>
+							<span class="n">m</span><span class="o">.</span><span class="n">set_pointer</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+							
+							<span class="n">m</span><span class="o">.</span><span class="n">set_f</span><span class="p">(</span><span class="n">fmn</span><span class="p">)</span>
+							<span class="nb">open</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+							
+						<span class="k">if</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">open</span> <span class="ow">and</span> <span class="n">fmn</span> <span class="o">&lt;</span> <span class="n">m</span><span class="o">.</span><span class="n">get_f</span><span class="p">():</span>
+							<span class="c1">#子ノードがチェック予定にあって評価値がfmnより低いなら</span>
+							<span class="c1">#評価値をfmnにする</span>
+							<span class="n">m</span><span class="o">.</span><span class="n">set_f</span><span class="p">(</span><span class="n">fmn</span><span class="p">)</span>
+							
+							<span class="c1">#チェック予定に追加</span>
+							<span class="nb">open</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+							
+							<span class="c1">#親ノードを更新</span>
+							<span class="n">m</span><span class="o">.</span><span class="n">set_pointer</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+						
+						<span class="k">if</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">closed</span> <span class="ow">and</span> <span class="n">fmn</span> <span class="o">&lt;</span> <span class="n">m</span><span class="o">.</span><span class="n">get_f</span><span class="p">():</span>
+							<span class="c1">#親ノードを更新</span>
+							<span class="n">m</span><span class="o">.</span><span class="n">set_pointer</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+							
+							<span class="c1">#評価値をfmnにする</span>
+							<span class="n">m</span><span class="o">.</span><span class="n">set_f</span><span class="p">(</span><span class="n">fmn</span><span class="p">)</span>
+							
+							<span class="c1">#closedにある最初のmを削除</span>
+							<span class="n">closed</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">closed</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+							
+							<span class="c1">#チェック予定に追加</span>
+							<span class="nb">open</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+			
+			<span class="nb">open</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">get_f</span><span class="p">())</span>
+		<span class="k">return</span> <span class="n">success</span></div>
+</div>
+
+
+
+<span class="c1"># Music</span>
+<span class="c1"># =プロパティ</span>
+<span class="c1"># [chordlist] 和音クラス格納行列(Array)</span>
+<span class="c1"># [chordgraph] 和音探索グラフ(Search)</span>
+<span class="c1"># = 動作</span>
+<span class="c1"># TPSの呼び出し元．</span>
+<div class="viewcode-block" id="Music">
+<a class="viewcode-back" href="../Music.html#Music.Music">[ドキュメント]</a>
+<span class="k">class</span> <span class="nc">Music</span><span class="p">:</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Musicクラス</span>
+
+<span class="sd">	音楽（コード列）を表現し、和音間距離の遷移を分析するクラス</span>
+<span class="sd">			</span>
+<span class="sd">	Attributes:</span>
+<span class="sd">		chordlist  (List): 和音列を表すリスト</span>
+<span class="sd">		chordgraph (Search): 和音列を分析するためのグラフ</span>
+<span class="sd">	</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">chordgraph</span> <span class="o">=</span> <span class="kc">None</span>
+	
+	<span class="c1"># 和声進行の解釈を行う</span>
+	<span class="c1"># == 引数</span>
+	<span class="c1"># [chordsheet] 和音名をカンマ区切りで列挙した文字列(String)</span>
+	<span class="c1"># == 動作</span>
+	<span class="c1"># * クラスの初期化を行う。</span>
+	<span class="c1"># * chordlistの設定</span>
+	<span class="c1"># * 和音探索グラフの生成</span>
+<div class="viewcode-block" id="Music.explain">
+<a class="viewcode-back" href="../Music.html#Music.Music.explain">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">explain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chordsheet</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;和声進行の解釈を行う</span>
+
+<span class="sd">			コードネーム列を受け取ってTPS-ExJを用いた和音間距離の分析を行う。</span>
+<span class="sd">			最短路（合計和音間距離が最も小さくなる解釈）を求めた後、画面に表示する</span>
+<span class="sd">			</span>
+<span class="sd">			Args:</span>
+<span class="sd">				chordsheet (str): コードネーム列を表すテキスト</span>
+<span class="sd">				</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="c1">#@chordlistを初期化</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span> <span class="o">=</span> <span class="p">[]</span>
+		
+		<span class="c1">#カンマ区切りで渡された和音名列を配列に分割</span>
+		<span class="n">chordlistbuf</span> <span class="o">=</span> <span class="n">chordsheet</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+		
+		<span class="c1">#全ての調パターンを生成</span>
+		<span class="k">for</span> <span class="n">cd</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chordlistbuf</span><span class="p">)):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+			<span class="k">for</span> <span class="n">rootpc</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">):</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span><span class="p">[</span><span class="n">cd</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">chordlistbuf</span><span class="p">[</span><span class="n">cd</span><span class="p">],</span> <span class="n">rootpc</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span><span class="p">[</span><span class="n">cd</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">chordlistbuf</span><span class="p">[</span><span class="n">cd</span><span class="p">],</span> <span class="n">rootpc</span><span class="p">,</span> <span class="kc">True</span><span class="p">])</span>
+		
+		<span class="c1">#ここから探索グラフの作成</span>
+		<span class="c1">#グラフクラス生成</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">chordgraph</span> <span class="o">=</span> <span class="n">Search</span><span class="p">()</span>
+		
+		<span class="c1">#グラフクラスにノードを登録し，ノード番号を記録</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span><span class="p">)):</span>
+			<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+				<span class="n">nodename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chordgraph</span><span class="o">.</span><span class="n">new_node</span><span class="p">(</span><span class="n">nodename</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+		
+		<span class="c1">#出発ノード・終点ノードを作成</span>
+		<span class="n">startid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chordgraph</span><span class="o">.</span><span class="n">new_node</span><span class="p">(</span><span class="s2">&quot;START&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+		<span class="n">endid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chordgraph</span><span class="o">.</span><span class="n">new_node</span><span class="p">(</span><span class="s2">&quot;END&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">chordgraph</span><span class="o">.</span><span class="n">set_start_goal</span><span class="p">(</span><span class="n">startid</span><span class="p">,</span><span class="n">endid</span><span class="p">)</span>
+		
+		<span class="c1">#1つ目の和音は，すべて出発ノードとコスト0でリンク作成</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">chordgraph</span><span class="o">.</span><span class="n">new_branch</span><span class="p">(</span><span class="n">startid</span><span class="p">,</span><span class="n">i</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span>
+		
+		
+		<span class="c1">#最後の和音は，すべて終点ノードとコスト0でリンク作成</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">chordgraph</span><span class="o">.</span><span class="n">new_branch</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">endid</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+		
+		<span class="c1">#各枝のコストを計算しながらリンクを作成</span>
+		
+		<span class="n">tps_cal</span> <span class="o">=</span> <span class="n">Delta_Chord_calculator</span><span class="p">()</span>
+		
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Test_log.txt&quot;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">logfile</span><span class="p">:</span>
+			<span class="n">logfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> @@ &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">chordsheet</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; @@@</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+			<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">@@@ &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">chordsheet</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; @@@</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+		
+			<span class="c1">#(@chordlist.length) -1回繰り返し</span>
+			<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+				<span class="c1">#i番目の和音候補配列の全てから</span>
+				<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+					<span class="c1">#i+1番目の和音候補配列の全てへ</span>
+					<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chordlist</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
+						<span class="c1">#Chordクラスの生成</span>
+						<span class="n">x</span> <span class="o">=</span> <span class="n">Chord</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+						<span class="n">x</span><span class="o">.</span><span class="n">set_key</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+						
+						<span class="n">y</span> <span class="o">=</span> <span class="n">Chord</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+						<span class="n">y</span><span class="o">.</span><span class="n">set_key</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">k</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+					
+						<span class="n">distance</span> <span class="o">=</span> <span class="n">tps_cal</span><span class="o">.</span><span class="n">calc_chord_delta</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+						<span class="n">distance_ary</span> <span class="o">=</span> <span class="p">[</span><span class="n">tps_cal</span><span class="o">.</span><span class="n">get_last_delta_chord</span><span class="p">(),</span> <span class="n">tps_cal</span><span class="o">.</span><span class="n">get_last_delta_region</span><span class="p">(),</span> <span class="n">tps_cal</span><span class="o">.</span><span class="n">get_last_delta_basicspace</span><span class="p">()]</span>
+						
+						<span class="c1">#枝作成</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">chordgraph</span><span class="o">.</span><span class="n">new_branch</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">k</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">distance</span><span class="p">)</span>
+					
+						<span class="n">logfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;(C:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">distance_ary</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; R:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">distance_ary</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; B:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">distance_ary</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;)</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+				<span class="n">logfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+				
+			
+			<span class="bp">self</span><span class="o">.</span><span class="n">chordgraph</span><span class="o">.</span><span class="n">aStar</span><span class="p">()</span>
+			
+			<span class="n">logfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chordgraph</span><span class="p">))</span>
+			<span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chordgraph</span><span class="p">))</span></div>
+
+		
+	<span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;クラスの文字列化処理</span>
+<span class="sd">		</span>
+<span class="sd">			文字列表示する</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chordgraph</span><span class="p">)</span></div>
+
+
+
+
+<span class="n">test_music</span> <span class="o">=</span> <span class="n">Music</span><span class="p">()</span>
+<span class="c1">#test_music.explain(&quot;A m 7,D m 7,G 7,C maj7,F maj7,B m 7 -5,E 7,A m 7,A 7,D m 7,G 7,C maj7,A 7,D m 7,G 7,C maj7,B m 7 -5,E 7&quot;)</span>
+<span class="n">test_music</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="s2">&quot;C,F,G,C&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Author.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

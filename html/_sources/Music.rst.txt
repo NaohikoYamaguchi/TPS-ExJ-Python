@@ -1,0 +1,7 @@
+Music module
+============
+
+.. automodule:: Music
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+Region\_calculator module
+=========================
+
+.. automodule:: Region_calculator
+   :members:
+   :undoc-members:
+   :show-inheritance:

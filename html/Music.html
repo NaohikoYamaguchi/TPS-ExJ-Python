@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Music module &mdash; sourcecodev2  ドキュメント</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=c033477b"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=4dbe4bdc"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="Pitchclass module" href="Pitchclass.html" />
+    <link rel="prev" title="Modint module" href="Modint.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            sourcecodev2
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Basicspace.html">Basicspace module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Basicspace_calculator.html">Basicspace_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Chord.html">Chord module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Chord_calculator.html">Chord_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Delta_chord_calculator.html">Delta_chord_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modint.html">Modint module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Music module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Music.Music"><code class="docutils literal notranslate"><span class="pre">Music</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Music.chordlist"><code class="docutils literal notranslate"><span class="pre">Music.chordlist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Music.chordgraph"><code class="docutils literal notranslate"><span class="pre">Music.chordgraph</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Music.explain"><code class="docutils literal notranslate"><span class="pre">Music.explain()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Music.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.name"><code class="docutils literal notranslate"><span class="pre">Node.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.children"><code class="docutils literal notranslate"><span class="pre">Node.children</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.chord_cal"><code class="docutils literal notranslate"><span class="pre">Node.chord_cal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.pointer"><code class="docutils literal notranslate"><span class="pre">Node.pointer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.g"><code class="docutils literal notranslate"><span class="pre">Node.g</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.h"><code class="docutils literal notranslate"><span class="pre">Node.h</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.f"><code class="docutils literal notranslate"><span class="pre">Node.f</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.hasG"><code class="docutils literal notranslate"><span class="pre">Node.hasG</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.hasF"><code class="docutils literal notranslate"><span class="pre">Node.hasF</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.add_child"><code class="docutils literal notranslate"><span class="pre">Node.add_child()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.get_children"><code class="docutils literal notranslate"><span class="pre">Node.get_children()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.get_cost"><code class="docutils literal notranslate"><span class="pre">Node.get_cost()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.get_f"><code class="docutils literal notranslate"><span class="pre">Node.get_f()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.get_g"><code class="docutils literal notranslate"><span class="pre">Node.get_g()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.get_h"><code class="docutils literal notranslate"><span class="pre">Node.get_h()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.get_name"><code class="docutils literal notranslate"><span class="pre">Node.get_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.get_pointer"><code class="docutils literal notranslate"><span class="pre">Node.get_pointer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.set_f"><code class="docutils literal notranslate"><span class="pre">Node.set_f()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.set_g"><code class="docutils literal notranslate"><span class="pre">Node.set_g()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.set_h"><code class="docutils literal notranslate"><span class="pre">Node.set_h()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Node.set_pointer"><code class="docutils literal notranslate"><span class="pre">Node.set_pointer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Music.Search"><code class="docutils literal notranslate"><span class="pre">Search</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Search.node"><code class="docutils literal notranslate"><span class="pre">Search.node</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Search.goal"><code class="docutils literal notranslate"><span class="pre">Search.goal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Search.start"><code class="docutils literal notranslate"><span class="pre">Search.start</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Search.aStar"><code class="docutils literal notranslate"><span class="pre">Search.aStar()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Search.new_branch"><code class="docutils literal notranslate"><span class="pre">Search.new_branch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Search.new_node"><code class="docutils literal notranslate"><span class="pre">Search.new_node()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Music.Search.set_start_goal"><code class="docutils literal notranslate"><span class="pre">Search.set_start_goal()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Pitchclass.html">Pitchclass module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Region_calculator.html">Region_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphtest.html">graphtest module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sourcecodev2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Music module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Music.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-Music">
+<span id="music-module"></span><h1>Music module<a class="headerlink" href="#module-Music" title="Link to this heading"></a></h1>
+<p>Music.py</p>
+<p>音楽（和音列）からラティス状の遷移グラフを作成し、和音間距離が最短の解釈を探索する</p>
+<ul class="simple">
+<li><p>Author: Naohiko Yamaguchi</p></li>
+<li><p>Copyright (c) 2024 Naohiko Yamaguchi,IPUT in Tokyo, Japan.</p></li>
+<li><p>License: New BSD License</p></li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="Music.Music">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Music.</span></span><span class="sig-name descname"><span class="pre">Music</span></span><a class="reference internal" href="_modules/Music.html#Music"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Music" title="Link to this definition"></a></dt>
+<dd><p>ベースクラス: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Musicクラス</p>
+<p>音楽（コード列）を表現し、和音間距離の遷移を分析するクラス</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Music.Music.chordlist">
+<span class="sig-name descname"><span class="pre">chordlist</span></span><a class="headerlink" href="#Music.Music.chordlist" title="Link to this definition"></a></dt>
+<dd><p>和音列を表すリスト</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Music.Music.chordgraph">
+<span class="sig-name descname"><span class="pre">chordgraph</span></span><a class="headerlink" href="#Music.Music.chordgraph" title="Link to this definition"></a></dt>
+<dd><p>和音列を分析するためのグラフ</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#Music.Search" title="Music.Search">Search</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Music.explain">
+<span class="sig-name descname"><span class="pre">explain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chordsheet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Music.explain"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Music.explain" title="Link to this definition"></a></dt>
+<dd><p>和声進行の解釈を行う</p>
+<p>コードネーム列を受け取ってTPS-ExJを用いた和音間距離の分析を行う。
+最短路（合計和音間距離が最も小さくなる解釈）を求めた後、画面に表示する</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>chordsheet</strong> (<em>str</em>) -- コードネーム列を表すテキスト</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Music.Node">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Music.</span></span><span class="sig-name descname"><span class="pre">Node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Node"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Node" title="Link to this definition"></a></dt>
+<dd><p>ベースクラス: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Nodeクラス</p>
+<p>グラフを構成するノードを表現するクラス
+Note:
+本クラスは書籍「Java データ構造とアルゴリズム基礎講座」所収のコードをRubyに移植したものである．</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>Str</em>) -- ノード名</p></li>
+<li><p><strong>h</strong> (<em>Int</em>) -- ヒューリスティック値</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Music.Node.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#Music.Node.name" title="Link to this definition"></a></dt>
+<dd><p>ノード名</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Music.Node.children">
+<span class="sig-name descname"><span class="pre">children</span></span><a class="headerlink" href="#Music.Node.children" title="Link to this definition"></a></dt>
+<dd><p>子ノードを格納したリスト</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Music.Node.chord_cal">
+<span class="sig-name descname"><span class="pre">chord_cal</span></span><a class="headerlink" href="#Music.Node.chord_cal" title="Link to this definition"></a></dt>
+<dd><p>子コードとの距離を格納したリスト</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Music.Node.pointer">
+<span class="sig-name descname"><span class="pre">pointer</span></span><a class="headerlink" href="#Music.Node.pointer" title="Link to this definition"></a></dt>
+<dd><p>親ノードへのポインタ（参照）</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#Music.Node" title="Music.Node">Node</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Music.Node.g">
+<span class="sig-name descname"><span class="pre">g</span></span><a class="headerlink" href="#Music.Node.g" title="Link to this definition"></a></dt>
+<dd><p>コスト</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Music.Node.h">
+<span class="sig-name descname"><span class="pre">h</span></span><a class="headerlink" href="#Music.Node.h" title="Link to this definition"></a></dt>
+<dd><p>ヒューリスティック値</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Music.Node.f">
+<span class="sig-name descname"><span class="pre">f</span></span><a class="headerlink" href="#Music.Node.f" title="Link to this definition"></a></dt>
+<dd><p>評価値（初期値0）</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Music.Node.hasG">
+<span class="sig-name descname"><span class="pre">hasG</span></span><a class="headerlink" href="#Music.Node.hasG" title="Link to this definition"></a></dt>
+<dd><p>コスト設定済みフラグ（初期値False）</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Music.Node.hasF">
+<span class="sig-name descname"><span class="pre">hasF</span></span><a class="headerlink" href="#Music.Node.hasF" title="Link to this definition"></a></dt>
+<dd><p>評価値設定済みフラグ（初期値False）</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Node.add_child">
+<span class="sig-name descname"><span class="pre">add_child</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">child</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Node.add_child"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Node.add_child" title="Link to this definition"></a></dt>
+<dd><p>子ノードを追加する</p>
+<p>ノードに子ノードを追加する</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>child</strong> (<a class="reference internal" href="#Music.Node" title="Music.Node"><em>Node</em></a>) -- 子ノード</p></li>
+<li><p><strong>cost</strong> (<em>Int</em>) -- 子ノードへの経路コスト（ノード間距離）</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Node.get_children">
+<span class="sig-name descname"><span class="pre">get_children</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Node.get_children"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Node.get_children" title="Link to this definition"></a></dt>
+<dd><p>children(子ノードリスト)のゲッタ（アクセサ）</p>
+<p>children(子ノードリスト)を返す</p>
+<dl class="field-list simple">
+<dt class="field-odd">戻り値<span class="colon">:</span></dt>
+<dd class="field-odd"><p>子ノードリスト</p>
+</dd>
+<dt class="field-even">戻り値の型<span class="colon">:</span></dt>
+<dd class="field-even"><p>children (List)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Node.get_cost">
+<span class="sig-name descname"><span class="pre">get_cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">child</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Node.get_cost"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Node.get_cost" title="Link to this definition"></a></dt>
+<dd><p>指定した子ノードへの経路コスト（ノード間距離）を取得</p>
+<p>指定した子ノードへの経路コスト（ノード間距離）を返す</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>child</strong> (<a class="reference internal" href="#Music.Node" title="Music.Node"><em>Node</em></a>) -- 子ノード</p>
+</dd>
+<dt class="field-even">戻り値<span class="colon">:</span></dt>
+<dd class="field-even"><p>子ノードリスト</p>
+</dd>
+<dt class="field-odd">戻り値の型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>children_costs (List)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Node.get_f">
+<span class="sig-name descname"><span class="pre">get_f</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Node.get_f"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Node.get_f" title="Link to this definition"></a></dt>
+<dd><p>f(評価値)のゲッタ（アクセサ）</p>
+<p>f(評価値)を返す</p>
+<dl class="field-list simple">
+<dt class="field-odd">戻り値<span class="colon">:</span></dt>
+<dd class="field-odd"><p>評価値</p>
+</dd>
+<dt class="field-even">戻り値の型<span class="colon">:</span></dt>
+<dd class="field-even"><p>f (Int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Node.get_g">
+<span class="sig-name descname"><span class="pre">get_g</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Node.get_g"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Node.get_g" title="Link to this definition"></a></dt>
+<dd><p>g(コスト)のゲッタ（アクセサ）</p>
+<p>g(コスト)を返す</p>
+<dl class="field-list simple">
+<dt class="field-odd">戻り値<span class="colon">:</span></dt>
+<dd class="field-odd"><p>コスト</p>
+</dd>
+<dt class="field-even">戻り値の型<span class="colon">:</span></dt>
+<dd class="field-even"><p>g (Int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Node.get_h">
+<span class="sig-name descname"><span class="pre">get_h</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Node.get_h"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Node.get_h" title="Link to this definition"></a></dt>
+<dd><p>h(ヒューリスティック値)のゲッタ（アクセサ）</p>
+<p>h(ヒューリスティック値)を返す</p>
+<dl class="field-list simple">
+<dt class="field-odd">戻り値<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ヒューリスティック値</p>
+</dd>
+<dt class="field-even">戻り値の型<span class="colon">:</span></dt>
+<dd class="field-even"><p>h (Int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Node.get_name">
+<span class="sig-name descname"><span class="pre">get_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Node.get_name"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Node.get_name" title="Link to this definition"></a></dt>
+<dd><p>ノード名のゲッタ（アクセサ）</p>
+<p>ノード名を返す</p>
+<dl class="field-list simple">
+<dt class="field-odd">戻り値<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ノード名</p>
+</dd>
+<dt class="field-even">戻り値の型<span class="colon">:</span></dt>
+<dd class="field-even"><p>name (Str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Node.get_pointer">
+<span class="sig-name descname"><span class="pre">get_pointer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Node.get_pointer"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Node.get_pointer" title="Link to this definition"></a></dt>
+<dd><p>pointerのゲッタ（アクセサ）</p>
+<p>pointer(親ノード）を返す</p>
+<dl class="field-list simple">
+<dt class="field-odd">戻り値<span class="colon">:</span></dt>
+<dd class="field-odd"><p>親ノード</p>
+</dd>
+<dt class="field-even">戻り値の型<span class="colon">:</span></dt>
+<dd class="field-even"><p>node (<a class="reference internal" href="#Music.Node" title="Music.Node">Node</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Node.set_f">
+<span class="sig-name descname"><span class="pre">set_f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Node.set_f"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Node.set_f" title="Link to this definition"></a></dt>
+<dd><p>f(評価値)のセッタ（アクセサ）</p>
+<p>fに評価値を格納した後、評価値格納済みフラグを立てる</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>f</strong> (<em>Int</em>) -- 評価値</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Node.set_g">
+<span class="sig-name descname"><span class="pre">set_g</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Node.set_g"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Node.set_g" title="Link to this definition"></a></dt>
+<dd><p>g(コスト)のセッタ（アクセサ）</p>
+<p>gにコストを格納した後、コスト格納済みフラグを立てる</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>g</strong> (<em>Int</em>) -- コスト</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Node.set_h">
+<span class="sig-name descname"><span class="pre">set_h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Node.set_h"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Node.set_h" title="Link to this definition"></a></dt>
+<dd><p>h(ヒューリスティック値)のセッタ（アクセサ）</p>
+<p>hにヒューリスティック値を格納する</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>h</strong> (<em>Int</em>) -- ヒューリスティック値</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Node.set_pointer">
+<span class="sig-name descname"><span class="pre">set_pointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Node.set_pointer"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Node.set_pointer" title="Link to this definition"></a></dt>
+<dd><p>pointerのセッタ（アクセサ）</p>
+<p>pointerに親ノードへの参照を格納する</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference internal" href="#Music.Node" title="Music.Node"><em>Node</em></a>) -- 親ノード</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Music.Search">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Music.</span></span><span class="sig-name descname"><span class="pre">Search</span></span><a class="reference internal" href="_modules/Music.html#Search"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Search" title="Link to this definition"></a></dt>
+<dd><p>ベースクラス: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Searchクラス</p>
+<p>グラフを構成し、探索を行うクラス
+Note:
+本クラスは書籍「Java データ構造とアルゴリズム基礎講座」所収のコードをRubyに移植したものである．</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Music.Search.node">
+<span class="sig-name descname"><span class="pre">node</span></span><a class="headerlink" href="#Music.Search.node" title="Link to this definition"></a></dt>
+<dd><p>ノード群を格納したリスト</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Music.Search.goal">
+<span class="sig-name descname"><span class="pre">goal</span></span><a class="headerlink" href="#Music.Search.goal" title="Link to this definition"></a></dt>
+<dd><p>グラフの終点ノードを示す参照</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#Music.Node" title="Music.Node">Node</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Music.Search.start">
+<span class="sig-name descname"><span class="pre">start</span></span><a class="headerlink" href="#Music.Search.start" title="Link to this definition"></a></dt>
+<dd><p>グラフの始点ノードを示す参照</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#Music.Node" title="Music.Node">Node</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Search.aStar">
+<span class="sig-name descname"><span class="pre">aStar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Search.aStar"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Search.aStar" title="Link to this definition"></a></dt>
+<dd><p>A*アルゴリズムによる最短路探索</p>
+<p>A*（エースター）アルゴリズムによる最短路探索を行う。
+A*アルゴリズムは距離推定値（ヒューリスティック値）を使用して効率的な最短路探索を行うが、
+ヒューリスティック値が指定されていない場合はダイクストラ法に一致する。</p>
+<p>グラフ中の各ノードに求めた最短距離を格納する。</p>
+<dl class="field-list simple">
+<dt class="field-odd">戻り値<span class="colon">:</span></dt>
+<dd class="field-odd"><p>探索成功したか否か</p>
+</dd>
+<dt class="field-even">戻り値の型<span class="colon">:</span></dt>
+<dd class="field-even"><p>success (Bool)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Search.new_branch">
+<span class="sig-name descname"><span class="pre">new_branch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">child_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Search.new_branch"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Search.new_branch" title="Link to this definition"></a></dt>
+<dd><p>ノード間に枝を張る</p>
+<p>指定した子ノード間に経路（枝）を作成する</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_id</strong> (<em>Int</em>) -- 親ノードのノードID</p></li>
+<li><p><strong>child_id</strong> (<em>Int</em>) -- 子ノードのノードID</p></li>
+<li><p><strong>cost</strong> (<em>Int</em>) -- 枝のコスト（距離）</p></li>
+</ul>
+</dd>
+<dt class="field-even">戻り値<span class="colon">:</span></dt>
+<dd class="field-even"><p>ノード数</p>
+</dd>
+<dt class="field-odd">戻り値の型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>length (Int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Search.new_node">
+<span class="sig-name descname"><span class="pre">new_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heuristic</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Search.new_node"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Search.new_node" title="Link to this definition"></a></dt>
+<dd><p>グラフにノードを追加する</p>
+<p>指定した子ノードへの経路コスト（ノード間距離）を返す</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>Str</em>) -- ノード名</p></li>
+<li><p><strong>heuristic</strong> (<em>Int</em>) -- ヒューリスティック値</p></li>
+</ul>
+</dd>
+<dt class="field-even">戻り値<span class="colon">:</span></dt>
+<dd class="field-even"><p>ノード数</p>
+</dd>
+<dt class="field-odd">戻り値の型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>length (Int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Music.Search.set_start_goal">
+<span class="sig-name descname"><span class="pre">set_start_goal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Music.html#Search.set_start_goal"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#Music.Search.set_start_goal" title="Link to this definition"></a></dt>
+<dd><p>グラフの始点ノードと終点ノードを指定する</p>
+<p>指定した子ノード間に経路（枝）を作成する</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_id</strong> (<em>Int</em>) -- 始点ノードに指定するノードID</p></li>
+<li><p><strong>end_id</strong> (<em>Int</em>) -- 終点ノードに指定するノードID</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Modint.html" class="btn btn-neutral float-left" title="Modint module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Pitchclass.html" class="btn btn-neutral float-right" title="Pitchclass module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Author.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

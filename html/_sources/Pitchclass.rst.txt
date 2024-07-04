@@ -1,0 +1,7 @@
+Pitchclass module
+=================
+
+.. automodule:: Pitchclass
+   :members:
+   :undoc-members:
+   :show-inheritance:

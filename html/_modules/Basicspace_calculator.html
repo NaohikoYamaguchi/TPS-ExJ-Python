@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Basicspace_calculator &mdash; sourcecodev2  ドキュメント</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=c033477b"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sourcecodev2
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Basicspace.html">Basicspace module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Basicspace_calculator.html">Basicspace_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Chord.html">Chord module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Chord_calculator.html">Chord_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Delta_chord_calculator.html">Delta_chord_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Modint.html">Modint module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Music.html">Music module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Pitchclass.html">Pitchclass module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Region_calculator.html">Region_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../graphtest.html">graphtest module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sourcecodev2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">モジュールコード</a></li>
+      <li class="breadcrumb-item active">Basicspace_calculator</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Basicspace_calculator のソースコード</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Basicspace_calculator.py</span>
+
+<span class="sd">	TPSのBasicspace距離を算出するモジュール</span>
+<span class="sd">	</span>
+<span class="sd">	* Author: Naohiko Yamaguchi</span>
+<span class="sd">	* Copyright (c) 2024 Naohiko Yamaguchi,IPUT in Tokyo, Japan.</span>
+<span class="sd">	* License: New BSD License</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 事前に必要な外部モジュールをインポートする</span>
+<span class="kn">from</span> <span class="nn">Chord</span> <span class="kn">import</span> <span class="n">Chord</span>
+<span class="kn">from</span> <span class="nn">Basicspace</span> <span class="kn">import</span> <span class="n">Basicspace</span>
+<span class="kn">from</span> <span class="nn">Pitchclass</span> <span class="kn">import</span> <span class="n">Pitchclass</span>
+
+<div class="viewcode-block" id="BasicspaceCalculator">
+<a class="viewcode-back" href="../Basicspace_calculator.html#Basicspace_calculator.BasicspaceCalculator">[ドキュメント]</a>
+<span class="k">class</span> <span class="nc">BasicspaceCalculator</span><span class="p">:</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;BasicspaceCalculatorクラス</span>
+
+<span class="sd">		TPSのベーシックスペース距離を算出する</span>
+<span class="sd">				</span>
+<span class="sd">		Attributes:</span>
+<span class="sd">			chord_a (Chord): 算出元のコードクラス</span>
+<span class="sd">			chord_b (Chord): 算出元のコードクラス</span>
+<span class="sd">			a_bs(Basicspace): chord_aのベーシックスペースクラス</span>
+<span class="sd">			b_bs(Basicspace): chord_bのベーシックスペースクラス</span>
+<span class="sd">			delta(Int): ベーシックスペース距離</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">chord_a</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">chord_b</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">a_bs</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">b_bs</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="BasicspaceCalculator.calc_basicspace">
+<a class="viewcode-back" href="../Basicspace_calculator.html#Basicspace_calculator.BasicspaceCalculator.calc_basicspace">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">calc_basicspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chord_a</span><span class="p">,</span> <span class="n">chord_b</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;ベーシックスペース距離を算出する</span>
+
+<span class="sd">			与えられた2つのコードクラスから、ベーシックスペースを生成して距離を算出する</span>
+
+<span class="sd">			Args:</span>
+<span class="sd">			chord_a (Chord): 算出元のコードクラス</span>
+<span class="sd">			chord_b (Chord): 算出元のコードクラス</span>
+<span class="sd">			</span>
+<span class="sd">			Returns:</span>
+<span class="sd">				delta (Int): ベーシックスペース距離</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="c1"># 引数をプロパティに記録する</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">chord_a</span> <span class="o">=</span> <span class="n">chord_a</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">chord_b</span> <span class="o">=</span> <span class="n">chord_b</span>
+
+		<span class="c1"># ベーシックスペースの生成</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">a_bs</span> <span class="o">=</span> <span class="n">Basicspace</span><span class="p">(</span><span class="n">chord_a</span><span class="o">.</span><span class="n">get_chordname</span><span class="p">(),</span> <span class="n">chord_a</span><span class="o">.</span><span class="n">get_root</span><span class="p">(),</span> <span class="n">chord_a</span><span class="o">.</span><span class="n">get_minorflag</span><span class="p">())</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">b_bs</span> <span class="o">=</span> <span class="n">Basicspace</span><span class="p">(</span><span class="n">chord_b</span><span class="o">.</span><span class="n">get_chordname</span><span class="p">(),</span> <span class="n">chord_b</span><span class="o">.</span><span class="n">get_root</span><span class="p">(),</span> <span class="n">chord_b</span><span class="o">.</span><span class="n">get_minorflag</span><span class="p">())</span>
+
+		<span class="c1"># 距離の算出</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_basicspace</span><span class="p">()</span>
+
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span></div>
+
+
+<div class="viewcode-block" id="BasicspaceCalculator.delta_basicspace">
+<a class="viewcode-back" href="../Basicspace_calculator.html#Basicspace_calculator.BasicspaceCalculator.delta_basicspace">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">delta_basicspace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;ベーシックスペース距離を算出する</span>
+
+<span class="sd">			プロパティとして保存されているベーシックスペースから、ベーシックスペース距離を算出する</span>
+<span class="sd">			</span>
+<span class="sd">			Returns:</span>
+<span class="sd">				delta (Int): ベーシックスペース距離</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">delta_pos</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="n">delta_neg</span> <span class="o">=</span> <span class="mi">0</span>
+
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">):</span>
+			<span class="n">sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_bs</span><span class="o">.</span><span class="n">get_bs</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">b_bs</span><span class="o">.</span><span class="n">get_bs</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span>
+
+			<span class="k">if</span> <span class="n">sub</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="n">delta_neg</span> <span class="o">+=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">sub</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">delta_pos</span> <span class="o">+=</span> <span class="n">sub</span>
+
+		<span class="k">return</span> <span class="n">delta_neg</span> <span class="k">if</span> <span class="n">delta_pos</span> <span class="o">&lt;</span> <span class="n">delta_neg</span> <span class="k">else</span> <span class="n">delta_pos</span></div>
+
+
+<div class="viewcode-block" id="BasicspaceCalculator.get_last_delta">
+<a class="viewcode-back" href="../Basicspace_calculator.html#Basicspace_calculator.BasicspaceCalculator.get_last_delta">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">get_last_delta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;ベーシックスペース距離のゲッタ（アクセサ）</span>
+
+<span class="sd">			最後に算出したベーシックスペース距離を返す</span>
+<span class="sd">			</span>
+<span class="sd">			Returns:</span>
+<span class="sd">				delta (Int): ベーシックスペース距離</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span></div>
+
+
+	<span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;クラスの文字列化処理</span>
+<span class="sd">		</span>
+<span class="sd">			ベーシックスペース距離の算出過程を文字列表示する</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Basicspace( </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chord_a</span><span class="o">.</span><span class="n">get_chord_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> , </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chord_b</span><span class="o">.</span><span class="n">get_chord_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> ) = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">fedcba</span><span class="se">\t</span><span class="s2">   |   </span><span class="se">\t</span><span class="s2">fedcba</span><span class="se">\n</span><span class="s2">---------------</span><span class="se">\t</span><span class="s2">---+---</span><span class="se">\t</span><span class="s2">-------&quot;</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">):</span>
+			<span class="n">buf</span> <span class="o">=</span> <span class="n">Pitchclass</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+			<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">buf</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span><span class="si">}</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+			<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a_bs</span><span class="o">.</span><span class="n">get_bs</span><span class="p">()[</span><span class="n">i</span><span class="p">]):</span>
+				<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+			<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">   |   </span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+			<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b_bs</span><span class="o">.</span><span class="n">get_bs</span><span class="p">()[</span><span class="n">i</span><span class="p">]):</span>
+				<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+			<span class="nb">print</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Author.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

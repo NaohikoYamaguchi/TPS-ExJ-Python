@@ -1,0 +1,7 @@
+Modint module
+=============
+
+.. automodule:: Modint
+   :members:
+   :undoc-members:
+   :show-inheritance:

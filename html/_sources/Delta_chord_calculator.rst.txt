@@ -1,0 +1,7 @@
+Delta\_chord\_calculator module
+===============================
+
+.. automodule:: Delta_chord_calculator
+   :members:
+   :undoc-members:
+   :show-inheritance:

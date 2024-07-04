@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Basicspace &mdash; sourcecodev2  ドキュメント</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=c033477b"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sourcecodev2
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Basicspace.html">Basicspace module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Basicspace_calculator.html">Basicspace_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Chord.html">Chord module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Chord_calculator.html">Chord_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Delta_chord_calculator.html">Delta_chord_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Modint.html">Modint module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Music.html">Music module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Pitchclass.html">Pitchclass module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Region_calculator.html">Region_calculator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../graphtest.html">graphtest module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sourcecodev2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">モジュールコード</a></li>
+      <li class="breadcrumb-item active">Basicspace</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Basicspace のソースコード</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Basicspace.py</span>
+
+<span class="sd">	TPSのBasicspaceを実現するモジュール</span>
+<span class="sd">	</span>
+<span class="sd">	* Author: Naohiko Yamaguchi</span>
+<span class="sd">	* Copyright (c) 2024 Naohiko Yamaguchi,IPUT in Tokyo, Japan.</span>
+<span class="sd">	* License: New BSD License</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 事前に必要な外部モジュールをインポートする</span>
+<span class="kn">from</span> <span class="nn">Modint</span> <span class="kn">import</span> <span class="n">Modint</span>
+<span class="kn">from</span> <span class="nn">Pitchclass</span> <span class="kn">import</span> <span class="n">Pitchclass</span>
+
+<div class="viewcode-block" id="Basicspace">
+<a class="viewcode-back" href="../Basicspace.html#Basicspace.Basicspace">[ドキュメント]</a>
+<span class="k">class</span> <span class="nc">Basicspace</span><span class="p">:</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Basicspaceクラス</span>
+
+<span class="sd">		TPSのベーシックスペースを実現する</span>
+<span class="sd">		</span>
+<span class="sd">		Args:</span>
+<span class="sd">			chordname (str): コードネーム</span>
+<span class="sd">			root (int): 調のルート</span>
+<span class="sd">			is_minor (Boolean): 長調/短調フラグ(True-&gt;短調,False-&gt;長調)</span>
+<span class="sd">		</span>
+<span class="sd">		Attributes:</span>
+<span class="sd">			bs (List): ベーシックスペース</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chordname</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">is_minor</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">bs</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gen_bs</span><span class="p">(</span><span class="n">chordname</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">is_minor</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Basicspace.gen_bs">
+<a class="viewcode-back" href="../Basicspace.html#Basicspace.Basicspace.gen_bs">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">gen_bs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chordname</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">is_minor</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;ベーシックスペースを生成する</span>
+
+<span class="sd">			コードネーム、調のルート、長調/短調フラグから、当該和音を表すベーシックスペースを生成する。</span>
+
+<span class="sd">			Args:</span>
+<span class="sd">				chordname (str): コードネーム</span>
+<span class="sd">				root (int): 調のルート</span>
+<span class="sd">				is_minor (Boolean): 長調/短調フラグ(True-&gt;短調,False-&gt;長調)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="c1"># 配列の初期化（初期値はすべて1）</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">bs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span>
+
+		<span class="c1"># 調構成音の重みを1レベル増やす</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gen_bs_keyconstructnote</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">is_minor</span><span class="p">)</span>
+
+		<span class="c1"># コードネームから和音を構成する</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gen_bs_chordstructnote</span><span class="p">(</span><span class="n">chordname</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Basicspace.gen_bs_keyconstructnote">
+<a class="viewcode-back" href="../Basicspace.html#Basicspace.Basicspace.gen_bs_keyconstructnote">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">gen_bs_keyconstructnote</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">is_minor</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;ベーシックスペースの調構成音レベルを決定</span>
+
+<span class="sd">			調のルート、長調/短調フラグから、ベーシックスペースの調構成音レベルを決定する。</span>
+
+<span class="sd">			Args:</span>
+<span class="sd">				root (int): 調のルート</span>
+<span class="sd">				is_minor (Boolean): 長調/短調フラグ(True-&gt;短調,False-&gt;長調)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+	
+		<span class="n">nowpc</span> <span class="o">=</span> <span class="n">Modint</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+
+		<span class="n">steps</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">is_minor</span> <span class="k">else</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+		<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">:</span>
+			<span class="n">nowpc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">[</span><span class="n">nowpc</span><span class="o">.</span><span class="n">get</span><span class="p">()]</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Basicspace.gen_bs_chordstructnote">
+<a class="viewcode-back" href="../Basicspace.html#Basicspace.Basicspace.gen_bs_chordstructnote">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">gen_bs_chordstructnote</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chordname</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;ベーシックスペースの和音構成音レベルを決定</span>
+
+<span class="sd">			コードネームから当該和音を表すベーシックスペースを生成する。</span>
+
+<span class="sd">			Args:</span>
+<span class="sd">				chordname (str): コードネーム</span>
+<span class="sd">			</span>
+<span class="sd">			Note:</span>
+<span class="sd">				* コードネームパーサに対する注意</span>
+<span class="sd">					このコードネームパーサは暫定版であり，以下の制約を持つ．</span>
+<span class="sd">						* ルート音，各コードネームを構成する部品は半角スペースで区切る必要がある(例:&quot;Cm7-5&quot;-&gt;&quot;C m 7 -5&quot;)</span>
+<span class="sd">						* コードネームの文法誤りについては考慮していない</span>
+<span class="sd">				* 対応するコードネーム</span>
+<span class="sd">					現在，以下に示すコードネームに対応している．(@はコードの主音）</span>
+<span class="sd">						* [@] メジャーコード</span>
+<span class="sd">						* [@m] マイナーコード</span>
+<span class="sd">						* [@maj7] メジャー・セブンス</span>
+<span class="sd">						* [@mmaj7] マイナー・メジャー・セブンス</span>
+<span class="sd">						* [@aug] オーギュメント(増5度)</span>
+<span class="sd">						* [@-5] (altと同じ意味)フラットファイブ(減5度)</span>
+<span class="sd">						* [@alt] (-5と同じ意味)アルタード(減5度)</span>
+<span class="sd">						* [@7] セブンス</span>
+<span class="sd">						* [@m7] マイナー・セブンス</span>
+<span class="sd">						* [@aug7] オーギュメント・セブンス</span>
+<span class="sd">						* [@7-5] アルタード・セブンス</span>
+<span class="sd">						* [@dim] ディミニッシュ(ここではクラシック音楽理論風に三和音として定義)</span>
+<span class="sd">						* [@m7-5] マイナーセブン・フラッテッドファイブ</span>
+<span class="sd">						* [@dim(M7)] ディミニッシュド・メジャーセブンス</span>
+<span class="sd">						* [@sus4] サスペンデッド・フォー</span>
+<span class="sd">						* [@7sus4] セブンス・サスペンデッド・フォー</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">chord</span> <span class="o">=</span> <span class="n">chordname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+		<span class="n">rootpc</span> <span class="o">=</span> <span class="n">Modint</span><span class="p">(</span><span class="n">Pitchclass</span><span class="p">(</span><span class="n">chord</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="mi">12</span><span class="p">)</span>
+		<span class="n">nowpc</span> <span class="o">=</span> <span class="n">Modint</span><span class="p">(</span><span class="n">rootpc</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="mi">12</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">[</span><span class="n">nowpc</span><span class="o">.</span><span class="n">get</span><span class="p">()]</span> <span class="o">=</span> <span class="mi">6</span>  <span class="c1"># ルート音</span>
+
+		<span class="c1"># 第3音と第5音がセットされたかどうかのフラグ</span>
+		<span class="n">setno3</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="n">setno5</span> <span class="o">=</span> <span class="kc">False</span>
+
+		<span class="c1"># 各和音に対する処理は、Rubyのコードを参考に適宜実装</span>
+		<span class="c1"># ここでは省略しますが、具体的な和音に応じた処理を行う必要があります。</span>
+
+		<span class="c1"># 第3音と第5音の標準設定</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">setno3</span><span class="p">:</span>
+			<span class="n">nowpc</span> <span class="o">=</span> <span class="n">Modint</span><span class="p">(</span><span class="n">rootpc</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="mi">12</span><span class="p">)</span>
+			<span class="n">nowpc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">[</span><span class="n">nowpc</span><span class="o">.</span><span class="n">get</span><span class="p">()]</span> <span class="o">=</span> <span class="mi">4</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">setno5</span><span class="p">:</span>
+			<span class="n">nowpc</span> <span class="o">=</span> <span class="n">Modint</span><span class="p">(</span><span class="n">rootpc</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="mi">12</span><span class="p">)</span>
+			<span class="n">nowpc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">[</span><span class="n">nowpc</span><span class="o">.</span><span class="n">get</span><span class="p">()]</span> <span class="o">=</span> <span class="mi">5</span></div>
+
+
+<div class="viewcode-block" id="Basicspace.get_bs">
+<a class="viewcode-back" href="../Basicspace.html#Basicspace.Basicspace.get_bs">[ドキュメント]</a>
+	<span class="k">def</span> <span class="nf">get_bs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;ベーシックスペースのゲッタ（アクセサ）</span>
+
+<span class="sd">			ベーシックスペースを返す</span>
+
+<span class="sd">			Returns:</span>
+<span class="sd">				bs (List): ベーシックスペース</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bs</span></div>
+
+
+	<span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;クラスの文字列化処理</span>
+<span class="sd">		</span>
+<span class="sd">			ベーシックスペースを文字列表示する</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">fedcba</span><span class="se">\n</span><span class="s2">--------------&quot;</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">):</span>
+			<span class="n">buf</span> <span class="o">=</span> <span class="n">Pitchclass</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+			<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">buf</span><span class="o">.</span><span class="n">getname</span><span class="p">()</span><span class="si">}</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+			<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+				<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+			<span class="nb">print</span><span class="p">()</span>
+		<span class="k">return</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Author.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

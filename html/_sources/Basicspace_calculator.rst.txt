@@ -1,0 +1,7 @@
+Basicspace\_calculator module
+=============================
+
+.. automodule:: Basicspace_calculator
+   :members:
+   :undoc-members:
+   :show-inheritance:
