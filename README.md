@@ -35,7 +35,7 @@ This libraly release by New BSD License.
 
 If you would like to try this libraly, Run Music.py at first.
 
-On line 458, explain method get code name list of head of "Fly me to the moon".
+On line 540, explain method get code name list of head of "Fly me to the moon".
 Explain method calculate distance between adjacent chord. And return appropriate interpretation.
 
 You can read document made by RDoc in doc/index.html.
